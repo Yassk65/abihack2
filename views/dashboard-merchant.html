@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Marchand - Robi Marketplace</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/htmx.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header moderne -->
+        <header>
+            <div class="header-content">
+                <div class="brand-section">
+                    <h1><a href="/">🤖 Robi</a></h1>
+                    <span class="brand-tagline">Marketplace IA</span>
+                </div>
+                <nav class="main-nav">
+                    <a href="/merchant/dashboard" class="nav-link active">Dashboard</a>
+                    <a href="/merchant/analytics" class="nav-link">Analytics</a>
+                    <a href="/marketplace" class="nav-link">Marketplace</a>
+                </nav>
+                <div class="nav-actions">
+                    <div class="user-profile">
+                        <span class="user-avatar">👤</span>
+                        <span class="user-welcome">Marchand</span>
+                    </div>
+                    <form hx-post="/auth/logout" style="display: inline;">
+                        <button type="submit" class="btn btn-danger btn-small">Déconnexion</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Stats -->
+        <section class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-content">
+                    <h3 id="products-count">0</h3>
+                    <p>Produits</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🤖</div>
+                <div class="stat-content">
+                    <h3 id="bot-status">Inactif</h3>
+                    <p>Assistant IA</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-content">
+                    <h3 id="conversations-count">0</h3>
+                    <p>Conversations</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <h3 id="visitors-count">0</h3>
+                    <p>Visiteurs</p>
+                </div>
+            </div>
+        </section>
+
+        <main class="dashboard-main">
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2>🚀 Actions Rapides</h2>
+                <div class="action-grid">
+                    <button class="action-card" onclick="showAddProductModal()">
+                        <div class="action-icon">➕</div>
+                        <h3>Ajouter un Produit</h3>
+                        <p>Enrichissez votre catalogue</p>
+                    </button>
+                    <button class="action-card" onclick="showBotConfig()">
+                        <div class="action-icon">🤖</div>
+                        <h3>Configurer le Bot</h3>
+                        <p>Personnalisez votre assistant</p>
+                    </button>
+                    <button class="action-card" onclick="viewAnalytics()">
+                        <div class="action-icon">📊</div>
+                        <h3>Voir Analytics</h3>
+                        <p>Analysez vos performances</p>
+                    </button>
+                    <button class="action-card" onclick="viewMarketplace()">
+                        <div class="action-icon">🛍️</div>
+                        <h3>Voir Marketplace</h3>
+                        <p>Découvrez la concurrence</p>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Products Section -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h3>📦 Mes Produits</h3>
+                    <button class="btn btn-primary" onclick="showAddProductModal()">+ Ajouter</button>
+                </div>
+                
+                <div id="products-list" class="products-grid">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Bot Section -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h3>🤖 Mon Assistant IA</h3>
+                    <div class="bot-status-indicator" id="bot-status-indicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Chargement...</span>
+                    </div>
+                </div>
+                
+                <div id="bot-section">
+                    <!-- Bot config will be loaded here -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🤖 Robi Marketplace</h4>
+                    <p>La révolution de l'e-commerce avec l'IA</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">📧</a>
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">💼</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Produit</h4>
+                    <a href="#features">Fonctionnalités</a>
+                    <a href="#pricing">Tarifs</a>
+                    <a href="#demo">Démo</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="#help">Aide</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#docs">Documentation</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Startup</h4>
+                    <a href="#about">À propos</a>
+                    <a href="#team">Équipe</a>
+                    <a href="#investors">Investisseurs</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Robi Marketplace. Fait avec ❤️ pour révolutionner l'e-commerce.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal Add Product -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Ajouter un Produit</h3>
+                <button class="modal-close" onclick="closeModal('addProductModal')">&times;</button>
+            </div>
+            <form hx-post="/merchant/products/add" hx-target="#products-list" hx-swap="afterbegin" onsubmit="closeModal('addProductModal')">
+                <div class="form-group">
+                    <label>Nom du produit</label>
+                    <input name="name" placeholder="Ex: iPhone 15 Pro" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Prix (€)</label>
+                        <input name="price" type="number" step="0.01" placeholder="99.99" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select name="category">
+                            <option value="electronique">Électronique</option>
+                            <option value="mode">Mode</option>
+                            <option value="maison">Maison</option>
+                            <option value="sport">Sport</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="3" placeholder="Décrivez votre produit..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Caractéristiques (JSON)</label>
+                    <textarea name="characteristics" rows="2" placeholder='{"couleur": "noir", "taille": "M"}'></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addProductModal')">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Ajouter le Produit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        function loadDashboardData() {
+            fetch('/merchant/data')
+                .then(response => response.json())
+                .then(data => {
+                    updateStats(data);
+                    loadProducts(data.products);
+                    loadBotSection(data.bot, data.products);
+                })
+                .catch(error => {
+                    console.error('Error loading dashboard data:', error);
+                });
+        }
+
+        function updateStats(data) {
+            document.getElementById('products-count').textContent = data.products ? data.products.length : 0;
+            document.getElementById('bot-status').textContent = data.bot ? (data.bot.is_published ? 'Actif' : 'Inactif') : 'Non créé';
+            // Simulate other stats
+            document.getElementById('conversations-count').textContent = Math.floor(Math.random() * 50);
+            document.getElementById('visitors-count').textContent = Math.floor(Math.random() * 200);
+        }
+
+        function loadProducts(products) {
+            const productsList = document.getElementById('products-list');
+            if (products && products.length > 0) {
+                productsList.innerHTML = products.map(product => `
+                    <div class="product-card" id="product-${product.id}">
+                        <div class="product-header">
+                            <h4>${product.name}</h4>
+                            <span class="product-price">${product.price}€</span>
+                        </div>
+                        <p class="product-description">${product.description || 'Aucune description'}</p>
+                        ${product.characteristics ? `<div class="product-tags">${Object.entries(JSON.parse(product.characteristics) || {}).map(([key, value]) => `<span class="tag">${key}: ${value}</span>`).join('')}</div>` : ''}
+                        <div class="product-actions">
+                            <button class="btn btn-small btn-secondary">Modifier</button>
+                            <button hx-delete="/merchant/products/${product.id}" hx-target="#product-${product.id}" hx-swap="outerHTML" class="btn btn-small btn-danger">Supprimer</button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                productsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h3>Aucun produit</h3>
+                        <p>Commencez par ajouter votre premier produit</p>
+                        <button class="btn btn-primary" onclick="showAddProductModal()">+ Ajouter un Produit</button>
+                    </div>
+                `;
+            }
+        }
+
+        function loadBotSection(bot, products) {
+            const botSection = document.getElementById('bot-section');
+            const statusIndicator = document.getElementById('bot-status-indicator');
+            
+            if (bot) {
+                statusIndicator.innerHTML = `
+                    <span class="status-dot ${bot.is_published ? 'active' : 'inactive'}"></span>
+                    <span class="status-text">${bot.is_published ? 'Actif' : 'Inactif'}</span>
+                `;
+                
+                botSection.innerHTML = `
+                    <div class="bot-card">
+                        <div class="bot-info">
+                            <h4>🤖 ${bot.name}</h4>
+                            <p>${bot.personality_prompt.substring(0, 150)}...</p>
+                            <div class="bot-stats">
+                                <span class="bot-stat">📦 ${products ? products.length : 0} produits</span>
+                                <span class="bot-stat ${bot.is_published ? 'published' : 'draft'}">${bot.is_published ? '✅ Publié' : '📝 Brouillon'}</span>
+                            </div>
+                        </div>
+                        <div class="bot-actions">
+                            <button class="btn btn-primary" onclick="showBotConfig()">Configurer</button>
+                            <button class="btn btn-secondary" onclick="testBot('${bot.id}')">Tester</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                statusIndicator.innerHTML = `
+                    <span class="status-dot inactive"></span>
+                    <span class="status-text">Non créé</span>
+                `;
+                
+                const hasProducts = products && products.length > 0;
+                botSection.innerHTML = `
+                    <div class="bot-setup">
+                        <div class="setup-steps">
+                            <div class="setup-step ${hasProducts ? 'completed' : 'pending'}">
+                                <div class="step-number">${hasProducts ? '✅' : '1'}</div>
+                                <div class="step-content">
+                                    <h4>Ajoutez des produits</h4>
+                                    <p>${hasProducts ? `${products.length} produit(s) ajouté(s)` : 'Ajoutez au moins un produit'}</p>
+                                </div>
+                            </div>
+                            <div class="setup-step ${hasProducts ? 'active' : 'disabled'}">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Créez votre assistant IA</h4>
+                                    <p>Configurez la personnalité de votre bot</p>
+                                </div>
+                            </div>
+                        </div>
+                        ${hasProducts ? `
+                            <button class="btn btn-primary btn-large" onclick="showBotConfig()">🚀 Créer mon Assistant IA</button>
+                        ` : `
+                            <button class="btn btn-secondary btn-large" disabled>Ajoutez d'abord des produits</button>
+                        `}
+                    </div>
+                `;
+            }
+        }
+
+        // Modal functions
+        function showAddProductModal() {
+            document.getElementById('addProductModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showBotConfig() {
+            // Redirect to bot configuration page
+            window.location.href = '/merchant/bot-config';
+        }
+
+        function testBot(botId) {
+            window.open(`/chat/${botId}`, '_blank');
+        }
+
+        function viewAnalytics() {
+            window.location.href = '/merchant/analytics';
+        }
+
+        function viewMarketplace() {
+            window.location.href = '/marketplace';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Client - Robi Marketplace</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/htmx.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header moderne -->
+        <header>
+            <div class="header-content">
+                <div class="brand-section">
+                    <h1><a href="/">🤖 Robi</a></h1>
+                    <span class="brand-tagline">Marketplace IA</span>
+                </div>
+                <nav class="main-nav">
+                    <a href="/client/dashboard" class="nav-link active">Dashboard</a>
+                    <a href="/marketplace" class="nav-link">Marketplace</a>
+                    <a href="/client/favorites" class="nav-link">Favoris</a>
+                    <a href="/client/history" class="nav-link">Historique</a>
+                </nav>
+                <div class="nav-actions">
+                    <div class="user-profile">
+                        <span class="user-avatar">👤</span>
+                        <span class="user-welcome">Client</span>
+                    </div>
+                    <a href="/auth/logout" class="btn btn-danger btn-small">Déconnexion</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Stats -->
+       
+
+        <main class="dashboard-main">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h2>👋 Bienvenue sur Robi Marketplace</h2>
+                    <p>Découvrez des assistants IA spécialisés qui vous aident à trouver exactement ce que vous cherchez</p>
+                    <div class="welcome-actions">
+                        <a href="/marketplace" class="btn btn-primary btn-large">🛍️ Explorer le Marketplace</a>
+                        <button class="btn btn-secondary" onclick="showTutorial()">📚 Comment ça marche ?</button>
+                    </div>
+                </div>
+                <div class="welcome-visual">
+                    <div class="floating-bots">
+                        <div class="bot-bubble">🤖</div>
+                        <div class="bot-bubble">💬</div>
+                        <div class="bot-bubble">🛍️</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Recent Conversations -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h3>💬 Conversations Récentes</h3>
+                    <a href="/client/history" class="btn btn-secondary btn-small">Voir tout</a>
+                </div>
+                
+                <div id="recent-conversations" class="conversations-list">
+                    <!-- Recent conversations will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Recommended Bots -->
+            <section class="dashboard-section">
+                <div class="section-header">
+                    <h3>🌟 Bots Recommandés</h3>
+                    <a href="/marketplace" class="btn btn-secondary btn-small">Voir tous</a>
+                </div>
+                
+                <div id="recommended-bots" class="bots-grid">
+                    <!-- Recommended bots will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Quick Actions -->
+            <section class="quick-actions">
+                <h2>🚀 Actions Rapides</h2>
+                <div class="action-grid">
+                    <button class="action-card" onclick="exploreMarketplace()">
+                        <div class="action-icon">🛍️</div>
+                        <h3>Explorer le Marketplace</h3>
+                        <p>Découvrez tous les assistants IA</p>
+                    </button>
+                    <button class="action-card" onclick="viewFavorites()">
+                        <div class="action-icon">⭐</div>
+                        <h3>Mes Favoris</h3>
+                        <p>Retrouvez vos bots préférés</p>
+                    </button>
+                    <button class="action-card" onclick="viewHistory()">
+                        <div class="action-icon">📚</div>
+                        <h3>Mon Historique</h3>
+                        <p>Consultez vos conversations</p>
+                    </button>
+                    <button class="action-card" onclick="getSupport()">
+                        <div class="action-icon">💡</div>
+                        <h3>Aide & Support</h3>
+                        <p>Besoin d'assistance ?</p>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>🤖 Robi Marketplace</h4>
+                    <p>La révolution de l'e-commerce avec l'IA</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">📧</a>
+                        <a href="#" class="social-link">🐦</a>
+                        <a href="#" class="social-link">💼</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Produit</h4>
+                    <a href="#features">Fonctionnalités</a>
+                    <a href="#pricing">Tarifs</a>
+                    <a href="#demo">Démo</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <a href="#help">Aide</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#docs">Documentation</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Startup</h4>
+                    <a href="#about">À propos</a>
+                    <a href="#team">Équipe</a>
+                    <a href="#investors">Investisseurs</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Robi Marketplace. Fait avec ❤️ pour révolutionner l'e-commerce.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorialModal" class="modal">
+        <div class="modal-content tutorial-modal">
+            <div class="modal-header">
+                <h3>📚 Comment utiliser Robi Marketplace</h3>
+                <button class="modal-close" onclick="closeModal('tutorialModal')">&times;</button>
+            </div>
+            <div class="tutorial-steps">
+                <div class="tutorial-step">
+                    <div class="step-icon">🛍️</div>
+                    <h4>1. Explorez le Marketplace</h4>
+                    <p>Découvrez tous les assistants IA spécialisés créés par nos marchands</p>
+                </div>
+                <div class="tutorial-step">
+                    <div class="step-icon">💬</div>
+                    <h4>2. Chattez avec les Bots</h4>
+                    <p>Posez vos questions et laissez l'IA vous guider vers les meilleurs produits</p>
+                </div>
+                <div class="tutorial-step">
+                    <div class="step-icon">⭐</div>
+                    <h4>3. Sauvegardez vos Favoris</h4>
+                    <p>Marquez vos assistants préférés pour les retrouver facilement</p>
+                </div>
+                <div class="tutorial-step">
+                    <div class="step-icon">🎯</div>
+                    <h4>4. Trouvez ce que vous cherchez</h4>
+                    <p>Chaque bot ne connaît que les produits de son marchand - conseil personnalisé garanti !</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="closeModal('tutorialModal')">Compris !</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        function loadDashboardData() {
+            // Load recent conversations
+            loadRecentConversations();
+            
+            // Load recommended bots
+            loadRecommendedBots();
+            
+            // Update stats
+            updateStats();
+        }
+
+        function updateStats() {
+            // Simulate stats for demo
+            document.getElementById('conversations-count').textContent = Math.floor(Math.random() * 20);
+            document.getElementById('bots-discovered').textContent = Math.floor(Math.random() * 15);
+            document.getElementById('favorites-count').textContent = Math.floor(Math.random() * 8);
+            document.getElementById('recommendations').textContent = Math.floor(Math.random() * 12);
+        }
+
+        function loadRecentConversations() {
+            const conversationsList = document.getElementById('recent-conversations');
+            
+            // Simulate recent conversations
+            const mockConversations = [
+               
+            ];
+
+            if (mockConversations.length > 0) {
+                conversationsList.innerHTML = mockConversations.map(conv => `
+                    <div class="conversation-card">
+                        <div class="conversation-info">
+                            <h4>🤖 ${conv.botName}</h4>
+                            <p class="shop-name">🏪 ${conv.shopName}</p>
+                            <p class="last-message">"${conv.lastMessage}"</p>
+                        </div>
+                        <div class="conversation-meta">
+                            <span class="time">${conv.time}</span>
+                            <button class="btn btn-small btn-primary">Continuer</button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                conversationsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💬</div>
+                        <h3>Aucune conversation</h3>
+                        <p>Commencez à chatter avec les assistants IA</p>
+                        <a href="/marketplace" class="btn btn-primary">Explorer le Marketplace</a>
+                    </div>
+                `;
+            }
+        }
+
+        function loadRecommendedBots() {
+            fetch('/marketplace/bots')
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const botCards = doc.querySelectorAll('.bot-card');
+                    
+                    const recommendedBots = document.getElementById('recommended-bots');
+                    if (botCards.length > 0) {
+                        // Show only first 3 bots as recommendations
+                        const limitedBots = Array.from(botCards).slice(0, 3);
+                        recommendedBots.innerHTML = limitedBots.map(card => card.outerHTML).join('');
+                    } else {
+                        recommendedBots.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">🤖</div>
+                                <h3>Aucun bot disponible</h3>
+                                <p>Les marchands n'ont pas encore créé d'assistants</p>
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading recommended bots:', error);
+                });
+        }
+
+        // Action functions
+        function exploreMarketplace() {
+            window.location.href = '/marketplace';
+        }
+
+        function viewFavorites() {
+            window.location.href = '/client/favorites';
+        }
+
+        function viewHistory() {
+            window.location.href = '/client/history';
+        }
+
+        function getSupport() {
+            window.location.href = '/support';
+        }
+
+        function showTutorial() {
+            document.getElementById('tutorialModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

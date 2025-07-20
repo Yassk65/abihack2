@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - Robi Marketplace</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/htmx.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><a href="/marketplace">🤖 Robi Marketplace</a></h1>
+                <div class="nav-actions">
+                    <a href="/marketplace" class="btn btn-secondary btn-small">← Marketplace</a>
+                    <form hx-post="/auth/logout" style="display: inline;">
+                        <button type="submit" class="btn btn-danger btn-small">Déconnexion</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2 id="bot-name">Assistant IA</h2>
+                    <p>Posez vos questions sur les produits disponibles</p>
+                </div>
+                
+                <div class="chat-messages" id="messages">
+                    <!-- Messages will appear here -->
+                </div>
+                
+                <form class="chat-form" hx-post="/chat/send" hx-target="#messages" hx-swap="beforeend">
+                    <input type="hidden" name="botId" id="botId">
+                    <div class="chat-input-group">
+                        <input name="message" placeholder="Tapez votre message..." required autocomplete="off">
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get bot ID from URL
+            const botId = window.location.pathname.split('/').pop();
+            document.getElementById('botId').value = botId;
+            
+            // Load bot info
+            fetch(`/chat/${botId}/info`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('bot-name').textContent = data.name;
+                })
+                .catch(error => console.error('Error loading bot info:', error));
+            
+            // Load conversation history
+            fetch(`/chat/${botId}/history`)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('messages').innerHTML = html;
+                    scrollToBottom();
+                })
+                .catch(error => console.error('Error loading history:', error));
+            
+            // Auto-scroll to bottom after new messages
+            document.body.addEventListener('htmx:afterSwap', function(event) {
+                if (event.target.id === 'messages') {
+                    scrollToBottom();
+                    // Clear input
+                    document.querySelector('input[name="message"]').value = '';
+                }
+            });
+            
+            function scrollToBottom() {
+                const messages = document.getElementById('messages');
+                messages.scrollTop = messages.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Robi Marketplace</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/htmx.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><a href="/">🤖 Robi Marketplace</a></h1>
+                <div class="nav-actions">
+                    <a href="/auth/login" class="btn btn-secondary btn-small">Se connecter</a>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="auth-form">
+                <h2>Inscription</h2>
+                
+                <form method="POST" action="/auth/register">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Mot de passe:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="role">Je suis:</label>
+                        <select id="role" name="role" required>
+                            <option value="">Choisir...</option>
+                            <option value="client">Client (je veux acheter)</option>
+                            <option value="marchand">Marchand (je veux vendre)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">S'inscrire</button>
+                </form>
+                
+                <p class="auth-link">
+                    Déjà un compte ? <a href="/auth/login">Se connecter</a>
+                </p>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{
+  "name": "robi-marketplace",
+  "version": "1.0.0",
+  "description": "E-commerce marketplace with AI chatbots",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "init-db": "node init-db.js",
+    "clean-db": "node clean-db.js",
+    "list-tables": "node list-tables.js",
+    "test": "node test-setup.js",
+    "check-data": "node check-data.js",
+    "create-bot": "node create-test-bot.js",
+    "demo": "node create-demo-data.js",
+    "test-isolation": "node test-bot-isolation.js",
+    "test-merchant": "node create-test-merchant.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.3",
+    "bcryptjs": "^2.4.3",
+    "express-session": "^1.17.3",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

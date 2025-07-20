@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Marchand - Robi Marketplace</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="/htmx.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1><a href="/">🤖 Robi Marketplace</a></h1>
+                <div class="nav-actions">
+                    <span class="user-welcome">👋 Dashboard Marchand</span>
+                    <a href="/auth/logout" class="btn btn-danger btn-small">Déconnexion</a>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <h2>Dashboard Marchand</h2>
+
+            <!-- Products Section -->
+            <section class="dashboard-section">
+                <h3>Mes Produits</h3>
+
+                <form hx-post="/merchant/products/add" hx-target="#product-list" hx-swap="afterbegin" class="add-form">
+                    <div class="form-row">
+                        <input name="name" placeholder="Nom du produit" required>
+                        <input name="price" type="number" step="0.01" placeholder="Prix (FCFA)" required>
+                    </div>
+                    <textarea name="description" placeholder="Description du produit" rows="2"></textarea>
+                    <textarea name="characteristics"
+                        placeholder='Caractéristiques JSON: {"couleur": "rouge", "taille": "M"}' rows="2"></textarea>
+                    <button type="submit" class="btn btn-primary">Ajouter Produit</button>
+                </form>
+
+                <div id="product-list" hx-get="/merchant/data" hx-trigger="load" hx-target="this" hx-swap="innerHTML">
+                    <!-- Products will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Bot Section -->
+            <section class="dashboard-section">
+                <h3>🤖 Mon Assistant IA</h3>
+                <p class="section-description">Créez votre assistant personnel qui présentera VOS produits aux clients
+                </p>
+
+                <div id="bot-section" hx-get="/merchant/bot-interface" hx-trigger="load" hx-swap="innerHTML">
+                    <div class="loading">Chargement de l'interface bot...</div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Load dashboard data
+        document.addEventListener('DOMContentLoaded', function () {
+            loadDashboardData();
+        });
+
+        function loadDashboardData() {
+            console.log('🔄 Chargement des données du dashboard...');
+
+            fetch('/merchant/data')
+                .then(response => {
+                    console.log('📡 Réponse reçue:', response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('✅ Données chargées:', data);
+                    loadProducts(data.products);
+                    loadBotSection(data.bot, data.products);
+                })
+                .catch(error => {
+                    console.error('❌ Erreur chargement:', error);
+                    document.getElementById('bot-section').innerHTML = `
+                        <div class="error">
+                            <h4>❌ Erreur de chargement</h4>
+                            <p>Impossible de charger les données: ${error.message}</p>
+                            <button onclick="loadDashboardData()" class="btn btn-small">Réessayer</button>
+                        </div>
+                    `;
+                });
+        }
+
+        function loadProducts(products) {
+            const productList = document.getElementById('product-list');
+            if (products && products.length > 0) {
+                productList.innerHTML = products.map(product => `
+                    <div class="product-item" id="product-${product.id}">
+                        <h4>${product.name}</h4>
+                        <p>${product.description}</p>
+                        <p><strong>${product.price} FCFA</strong></p>
+                        ${product.characteristics ? `<p><small>${JSON.stringify(product.characteristics)}</small></p>` : ''}
+                        <button hx-delete="/merchant/products/${product.id}" hx-target="#product-${product.id}" hx-swap="outerHTML" class="btn btn-danger btn-small">
+                            Supprimer
+                        </button>
+                    </div>
+                `).join('');
+            } else {
+                productList.innerHTML = '<p class="no-products">Aucun produit. Ajoutez votre premier produit ci-dessus.</p>';
+            }
+        }
+
+        function loadBotSection(bot, products) {
+            const botSection = document.getElementById('bot-section');
+
+            if (bot) {
+                // Bot exists - show update form
+                botSection.innerHTML = `
+                    <div class="bot-config">
+                        <div class="bot-status">
+                            <h4>🤖 ${bot.name}</h4>
+                            <span class="status-badge ${bot.is_published ? 'published' : 'draft'}">
+                                ${bot.is_published ? '✅ Publié' : '📝 Brouillon'}
+                            </span>
+                        </div>
+                        <form hx-post="/merchant/bot/update" hx-target="#bot-section">
+                            <input type="hidden" name="botId" value="${bot.id}">
+                            <div class="form-group">
+                                <label>Nom du bot:</label>
+                                <input name="name" value="${bot.name}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Instructions de personnalité:</label>
+                                <textarea name="personalityPrompt" rows="5" required>${bot.personality_prompt}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="isPublished" ${bot.is_published ? 'checked' : ''}>
+                                    Publier sur le marketplace
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                        </form>
+                    </div>
+                `;
+            } else {
+                // No bot - show creation interface
+                const hasProducts = products && products.length > 0;
+
+                botSection.innerHTML = `
+                    <div class="bot-creation-guide">
+                        <div class="guide-step ${hasProducts ? 'completed' : 'pending'}">
+                            <h4>📋 Étape 1: Ajoutez vos produits</h4>
+                            <p>Votre bot ne pourra parler que des produits que vous ajoutez.</p>
+                            ${hasProducts ?
+                        `<p class="success">✅ Parfait ! Vous avez ${products.length} produit(s). Passez à l'étape 2.</p>` :
+                        `<p class="warning">⚠️ Ajoutez au moins un produit dans la section ci-dessus.</p>`
+                    }
+                        </div>
+                        
+                        <div class="guide-step ${hasProducts ? 'active' : 'disabled'}">
+                            <h4>🤖 Étape 2: Créez votre assistant IA</h4>
+                            ${hasProducts ? `
+                                <form hx-post="/merchant/bot/create" hx-target="#bot-section" class="bot-creation-form">
+                                    <div class="form-group">
+                                        <label>Nom de votre assistant:</label>
+                                        <input name="name" placeholder="Ex: Assistant Fruits, Conseiller Mode..." required>
+                                        <small>Ce nom sera visible par les clients sur le marketplace</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Personnalité de votre assistant:</label>
+                                        <textarea name="personalityPrompt" rows="6" placeholder="Décrivez comment votre bot doit se comporter. Exemple:&#10;'Tu es un expert en fruits frais, passionné par la qualité. Tu aides les clients à choisir les meilleurs produits selon leurs besoins. Tu es enthousiaste et donnes des conseils pratiques.'" required></textarea>
+                                        <small>Votre bot ne parlera QUE de vos ${products.length} produit(s) listés ci-dessus</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="checkbox" name="publishImmediately" checked>
+                                            Publier immédiatement sur le marketplace
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-large">🚀 Créer mon assistant IA</button>
+                                </form>
+                            ` : `
+                                <p class="disabled-message">Ajoutez d'abord des produits pour débloquer cette étape.</p>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>
