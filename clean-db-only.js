@@ -1,11 +1,11 @@
 const pool = require('./config/database');
 
 async function cleanDatabaseOnly() {
-    console.log('🧹 Nettoyage complet de la base de données...');
+    console.log('🧹 Nettoyage complet de la base de données MySQL...');
     
     try {
         // Désactiver les contraintes de clés étrangères temporairement
-        await pool.query('SET session_replication_role = replica;');
+        await pool.query('SET FOREIGN_KEY_CHECKS = 0');
         
         console.log('📋 Suppression de toutes les données...');
         
@@ -26,11 +26,10 @@ async function cleanDatabaseOnly() {
         console.log('✅ Utilisateurs supprimés');
         
         // Réactiver les contraintes de clés étrangères
-        await pool.query('SET session_replication_role = DEFAULT;');
+        await pool.query('SET FOREIGN_KEY_CHECKS = 1');
         
-        // Note: Pas besoin de réinitialiser les séquences car on utilise des UUID
-        console.log('✅ Tables vidées (UUID utilisés, pas de séquences à réinitialiser)');
-        console.log('\n🎉 Base de données complètement nettoyée !');
+        console.log('✅ Tables vidées (UUID utilisés)');
+        console.log('\n🎉 Base de données MySQL complètement nettoyée !');
         console.log('💡 Vous pouvez maintenant créer de nouvelles données de test.');
         
     } catch (error) {

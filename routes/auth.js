@@ -54,7 +54,7 @@ router.post('/register', async (req, res) => {
         // Create merchant profile if role is marchand
         if (role === 'marchand') {
             await pool.query(
-                'INSERT INTO merchants (user_id, shop_name, shop_description) VALUES ($1, $2, $3)',
+                'INSERT INTO merchants (user_id, shop_name, shop_description) VALUES (?, ?, ?)',
                 [user.id, 'Ma Boutique', 'Description de ma boutique']
             );
         }

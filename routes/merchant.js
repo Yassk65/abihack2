@@ -29,41 +29,6 @@ router.get('/bot', requireMerchant, async (req, res) => {
     res.sendFile(path.join(__dirname, '../views', 'merchant-bot.html'));
 });
 
-// Analytics (placeholder)
-router.get('/analytics', requireMerchant, (req, res) => {
-    res.send(`
-        <html>
-            <head>
-                <title>Analytics - Robi Marketplace</title>
-                <link rel="stylesheet" href="/style.css">
-            </head>
-            <body>
-                <div class="container">
-                    <header>
-                        <div class="header-content">
-                            <h1><a href="/">🤖 Robi Marketplace</a></h1>
-                            <div class="nav-actions">
-                                <a href="/merchant/dashboard" class="btn btn-secondary btn-small">← Dashboard</a>
-                            </div>
-                        </div>
-                    </header>
-                    <main>
-                        <div class="dashboard-section">
-                            <h2>📊 Analytics</h2>
-                            <div class="empty-state">
-                                <div class="empty-icon">📊</div>
-                                <h3>Analytics à venir</h3>
-                                <p>Bientôt disponible : statistiques détaillées de vos conversations et ventes</p>
-                                <a href="/merchant/dashboard" class="btn btn-primary">Retour au Dashboard</a>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-            </body>
-        </html>
-    `);
-});
-
 // Bot Config (placeholder)
 router.get('/bot-config', requireMerchant, (req, res) => {
     res.send(`
@@ -99,9 +64,39 @@ router.get('/bot-config', requireMerchant, (req, res) => {
     `);
 });
 
-// Dashboard analytics
-router.get('/analytics', requireMerchant, async (req, res) => {
-    res.sendFile(path.join(__dirname, '../views', 'merchant-analytics.html'));
+// Analytics (placeholder)
+router.get('/analytics', requireMerchant, (req, res) => {
+    res.send(`
+        <html>
+            <head>
+                <title>Analytics - Robi Marketplace</title>
+                <link rel="stylesheet" href="/style.css">
+            </head>
+            <body>
+                <div class="container">
+                    <header>
+                        <div class="header-content">
+                            <h1><a href="/">🤖 Robi Marketplace</a></h1>
+                            <div class="nav-actions">
+                                <a href="/merchant/dashboard" class="btn btn-secondary btn-small">← Dashboard</a>
+                            </div>
+                        </div>
+                    </header>
+                    <main>
+                        <div class="dashboard-section">
+                            <h2>📊 Analytics</h2>
+                            <div class="empty-state">
+                                <div class="empty-icon">📊</div>
+                                <h3>Analytics à venir</h3>
+                                <p>Bientôt disponible : statistiques détaillées de vos conversations et ventes</p>
+                                <a href="/merchant/dashboard" class="btn btn-primary">Retour au Dashboard</a>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </body>
+        </html>
+    `);
 });
 
 // Get merchant data for dashboard

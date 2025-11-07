@@ -2,20 +2,20 @@ const pool = require('./config/database');
 
 async function listTables() {
     try {
-        console.log('📋 Tables existantes dans la base de données:');
+        console.log('📋 Tables existantes dans la base de données MySQL:');
         
-        const result = await pool.query(`
+        const [rows] = await pool.query(`
             SELECT table_name 
             FROM information_schema.tables 
-            WHERE table_schema = 'public' 
+            WHERE table_schema = DATABASE()
             ORDER BY table_name;
         `);
         
-        if (result.rows.length === 0) {
+        if (rows.length === 0) {
             console.log('✅ Aucune table trouvée - base de données vide');
         } else {
-            result.rows.forEach((row, index) => {
-                console.log(`${index + 1}. ${row.table_name}`);
+            rows.forEach((row, index) => {
+                console.log(`${index + 1}. ${row.TABLE_NAME || row.table_name}`);
             });
         }
         

@@ -2,6 +2,10 @@
 
 Une marketplace e-commerce où les marchands configurent des bots IA qui chatent avec les clients pour vendre leurs produits.
 
+## ⚡ Démarrage rapide (5 minutes)
+
+**Nouveau sur le projet ?** Suivez le guide : **[DEMARRAGE_RAPIDE.md](DEMARRAGE_RAPIDE.md)**
+
 ## 🚀 Fonctionnalités
 
 ### Pour les Marchands
@@ -21,14 +25,14 @@ Une marketplace e-commerce où les marchands configurent des bots IA qui chatent
 
 - **Frontend**: HTMX + CSS
 - **Backend**: Node.js + Express.js
-- **Base de données**: PostgreSQL
+- **Base de données**: MySQL (compatible phpMyAdmin)
 - **IA**: OpenRouter API
 - **Session**: Express-session
 
 ## 📋 Prérequis
 
-1. **Node.js** (v16 ou plus récent)
-2. **PostgreSQL** (v12 ou plus récent)
+1. **Node.js** (v14 ou plus récent)
+2. **MySQL** (v5.7 ou plus récent) ou **XAMPP** (inclut MySQL + phpMyAdmin)
 3. **Compte OpenRouter** pour l'API IA
 
 ## 🔧 Installation
@@ -44,29 +48,45 @@ cd robi-marketplace
 npm install
 ```
 
-### 3. Configuration de la base de données
+### 3. Configuration de MySQL
 
-Créer une base de données PostgreSQL :
+#### Option A : Avec XAMPP (Recommandé pour Windows)
+1. Télécharger et installer [XAMPP](https://www.apachefriends.org/)
+2. Démarrer MySQL depuis le panneau de contrôle XAMPP
+3. Ouvrir phpMyAdmin : http://localhost/phpmyadmin
+4. Créer une nouvelle base de données : `robi_marketplace`
+
+#### Option B : MySQL standalone
 ```sql
-CREATE DATABASE robi_marketplace;
+CREATE DATABASE robi_marketplace CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 ### 4. Configuration des variables d'environnement
 
 Modifier le fichier `.env` :
 ```env
-DATABASE_URL=postgresql://username:password@localhost:5432/robi_marketplace
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=votre_mot_de_passe
+DB_NAME=robi_marketplace
 SESSION_SECRET=votre-clé-secrète-très-sécurisée
 OPENROUTER_API_KEY=votre-clé-openrouter
 PORT=3000
 ```
 
-### 5. Initialiser la base de données
+**Note :** Si vous utilisez XAMPP, laissez `DB_PASSWORD` vide.
+
+### 5. Tester la connexion MySQL
+```bash
+npm run test-connection
+```
+
+### 6. Initialiser la base de données
 ```bash
 npm run init-db
 ```
 
-### 6. Démarrer le serveur
+### 7. Démarrer le serveur
 ```bash
 # Mode développement
 npm run dev
@@ -74,6 +94,11 @@ npm run dev
 # Mode production
 npm start
 ```
+
+## 📚 Documentation complète
+
+- **[Guide d'installation MySQL](INSTALLATION_MYSQL.md)** - Installation détaillée pas à pas
+- **[Guide de migration](MIGRATION_MYSQL.md)** - Détails techniques de la migration PostgreSQL → MySQL
 
 ## 🌐 Utilisation
 
@@ -110,7 +135,7 @@ Reste toujours poli et enthousiaste !
 ```
 robi-marketplace/
 ├── config/
-│   └── database.js          # Configuration PostgreSQL
+│   └── database.js          # Configuration MySQL
 ├── database/
 │   └── schema.sql           # Schéma de la base de données
 ├── models/
@@ -144,7 +169,10 @@ Le projet utilise le modèle `openai/gpt-3.5-turbo` par défaut.
 ### Variables d'environnement de production :
 ```env
 NODE_ENV=production
-DATABASE_URL=postgresql://user:pass@host:port/db
+DB_HOST=votre-host-mysql
+DB_USER=votre-utilisateur
+DB_PASSWORD=votre-mot-de-passe
+DB_NAME=robi_marketplace
 SESSION_SECRET=clé-très-sécurisée-en-production
 OPENROUTER_API_KEY=votre-clé-api
 PORT=3000
@@ -159,18 +187,27 @@ npm start
 
 ## 🐛 Dépannage
 
-### Erreur de connexion à la base de données
-- Vérifier que PostgreSQL est démarré
-- Vérifier les paramètres de connexion dans `.env`
-- S'assurer que la base de données existe
+**Problèmes courants ?** Consultez le guide complet : **[DEPANNAGE.md](DEPANNAGE.md)**
 
-### Erreur OpenRouter
-- Vérifier la clé API dans `.env`
-- Vérifier le solde du compte OpenRouter
+### Problèmes fréquents
 
-### Port déjà utilisé
-- Changer le PORT dans `.env`
-- Ou arrêter le processus utilisant le port 3000
+**CSS ne s'affiche pas ?**
+- Vider le cache : `Ctrl + F5`
+- Vérifier : http://localhost:3000/style.css
+- Voir [DEPANNAGE.md](DEPANNAGE.md#1-le-css-ne-saffiche-pas)
+
+**Erreur 404 ?**
+- Certaines pages sont en construction
+- Voir [DEPANNAGE.md](DEPANNAGE.md#2-erreur-404-sur-les-pages)
+
+**Erreur de connexion MySQL ?**
+- Vérifier que MySQL est démarré (XAMPP)
+- Tester avec : `npm run test-connection`
+- Voir [DEPANNAGE.md](DEPANNAGE.md#4-erreur-de-connexion-à-la-base-de-données)
+
+**Serveur ne démarre pas ?**
+- Port occupé ? Changer dans `.env`
+- Voir [DEPANNAGE.md](DEPANNAGE.md#3-le-serveur-ne-démarre-pas)
 
 ## 📝 TODO / Améliorations Futures
 
